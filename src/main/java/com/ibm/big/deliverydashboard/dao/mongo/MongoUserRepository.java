@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.ibm.big.deliverydashboard.beans.user.User;
 
-public interface MongoUserRepository extends MongoRepository<User, String>
+public interface MongoUserRepository extends MongoRepository<User, String>, MongoUserRepositoryCustom
 {
 	List<User> findByBand(String band);
 	User findByEmail(String email);

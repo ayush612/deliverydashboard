@@ -1,5 +1,6 @@
 package com.ibm.big.deliverydashboard.beans.user;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @JsonInclude(value = Include.NON_EMPTY)
 public class User
 {
+	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	
 	@Id
 	String id;
 	String email;
+	String phone;
 	String firstname;
 	String lastname;
 	String dateOfBirth;
@@ -27,6 +31,7 @@ public class User
 	List<SkillTag> tags;
 	List<Role> roles;
 	String creationdate;
+	String updateddate;
 	String password;
 	boolean locked;
 
@@ -38,6 +43,16 @@ public class User
 	public void setId(String id)
 	{
 		this.id = id;
+	}
+	
+	public String getPhone()
+	{
+		return phone;
+	}
+
+	public void setPhone(String phone)
+	{
+		this.phone = phone;
 	}
 
 	public String getFirstname()
@@ -177,6 +192,16 @@ public class User
 	public void setCreationdate(String creationDate)
 	{
 		this.creationdate = creationDate;
+	}
+	
+	public String getUpdateddate()
+	{
+		return updateddate;
+	}
+
+	public void setUpdateddate(String updateddate)
+	{
+		this.updateddate = updateddate;
 	}
 
 	public String toString()

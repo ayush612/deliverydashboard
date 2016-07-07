@@ -1,5 +1,7 @@
 package com.ibm.big.deliverydashboard.services;
 
+import java.util.Date;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,5 +73,29 @@ public class UserServiceImpl implements UserService
 	{
 		return userRepo.findOne(id);
 	}
+
+	@Override
+	public long updateUserPassword(String email, String password) throws Exception
+	{
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String pwd = encoder.encode(password);
+		return userRepo.updatePassword(email, pwd);
+	}
+
+	@Override
+	public long updateUserBand(String email, String band) throws Exception
+	{
+		long l = userRepo.updateBand(email, band);
+		
+		User user = elasticRepo.findByEmail(email);
+		user.setBand(band);
+		user.setUpdateddate(User.dateFormat.format(new Date()));
+		elasticRepo.delete(user.getId());
+		elasticRepo.save(user);
+		
+		return l;
+	}
+	
+	
 
 }
