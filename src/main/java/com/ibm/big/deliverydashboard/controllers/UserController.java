@@ -68,15 +68,32 @@ public class UserController
 		return response;
 	}
 
-	@RequestMapping(method = RequestMethod.PATCH, value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.PATCH, value = "/user/profile", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("#user.email == authentication.name")
-	public @ResponseBody ResponseEntity<Long> updateUserPassword(@RequestBody(required = true) User user)
+	public @ResponseBody ResponseEntity<User> updateUserProfile(@RequestBody(required = true) User user)
 	{
-		ResponseEntity<Long> response;
+		ResponseEntity<User> response;
 		try
 		{
-			long l = userService.updateUserPassword(user.getEmail(), user.getPassword());
-			response = ResponseEntity.ok(l);
+			User u = userService.updateUser(user);
+			response = ResponseEntity.ok(u);
+		} catch (Exception e)
+		{
+			logger.error(e);
+			response = ResponseEntity.badRequest().body(null);
+		}
+		return response;
+	}
+
+	@RequestMapping(method = RequestMethod.PATCH, value = "/user/restricted", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ADMIN')")
+	public @ResponseBody ResponseEntity<User> updateUserRestricted(@RequestBody(required = true) User user)
+	{
+		ResponseEntity<User> response;
+		try
+		{
+			User u = userService.updateUserRestricted(user);
+			response = ResponseEntity.ok(u);
 		} catch (Exception e)
 		{
 			logger.error(e);

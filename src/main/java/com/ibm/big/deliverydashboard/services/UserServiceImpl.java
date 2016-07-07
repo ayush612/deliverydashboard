@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService
 
 	@Autowired
 	ElasticUserRepository elasticRepo;
-	
+
 	@Override
 	public User createUser(User user) throws Exception
 	{
@@ -46,19 +46,19 @@ public class UserServiceImpl implements UserService
 		{
 			throw new IllegalArgumentException("Invalid Email Address Specified");
 		}
-		
+
 		if (findByEmail(user.getEmail()) != null)
 		{
-			throw new IllegalArgumentException ("User Already Exists");
+			throw new IllegalArgumentException("User Already Exists");
 		}
-		
+
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
-		
+
 		user = userRepo.save(user);
 		user.setPassword(null);
 		user = elasticRepo.save(user);
-		
+
 		return user;
 	}
 
@@ -75,27 +75,72 @@ public class UserServiceImpl implements UserService
 	}
 
 	@Override
-	public long updateUserPassword(String email, String password) throws Exception
+	public User updateUserRestricted(User user) throws Exception
 	{
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String pwd = encoder.encode(password);
-		return userRepo.updatePassword(email, pwd);
+		User u = userRepo.findByEmail(user.getEmail());
+
+		if (u != null)
+		{
+			if (user.getDesignation() != null)
+			{
+				u.setDesignation(user.getDesignation());
+			}
+
+			if (user.getBand() != null)
+			{
+				u.setBand(user.getBand());
+			}
+
+			if (user.getRoles() != null)
+			{
+				u.setRoles(user.getRoles());
+			}
+
+			if (user.getTags() != null)
+			{
+				u.setTags(user.getTags());
+			}
+
+			logger.debug("Updated User = " + u);
+			u.setUpdateddate(User.dateFormat.format(new Date()));
+			userRepo.save(u);
+			u.setPassword(null);
+			// elasticRepo.delete(u.getId());
+			elasticRepo.save(u);
+		}
+		return u;
 	}
 
 	@Override
-	public long updateUserBand(String email, String band) throws Exception
+	public User updateUser(User user) throws Exception
 	{
-		long l = userRepo.updateBand(email, band);
+		User u = userRepo.findByEmail(user.getEmail());
 		
-		User user = elasticRepo.findByEmail(email);
-		user.setBand(band);
-		user.setUpdateddate(User.dateFormat.format(new Date()));
-		elasticRepo.delete(user.getId());
-		elasticRepo.save(user);
-		
-		return l;
+		if (u != null)
+		{
+			if (user.getFirstname() != null)
+			{
+				u.setFirstname(user.getFirstname());
+			}
+			if (user.getLastname() != null)
+			{
+				u.setLastname(user.getLastname());
+			}
+			if (user.getPhone() != null)
+			{
+				u.setPhone(user.getPhone());
+			}
+			if (user.getPassword() != null)
+			{
+				u.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+			}
+			u.setUpdateddate(User.dateFormat.format(new Date()));
+			userRepo.save(u);
+			u.setPassword(null);
+			// elasticRepo.delete(u.getId());
+			elasticRepo.save(u);
+		}
+		return u;
 	}
-	
-	
 
 }
