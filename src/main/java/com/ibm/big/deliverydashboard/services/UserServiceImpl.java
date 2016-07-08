@@ -91,6 +91,16 @@ public class UserServiceImpl implements UserService
 				u.setBand(user.getBand());
 			}
 
+			if (user.getCareerStartDate() != null)
+			{
+				u.setCareerStartDate(user.getCareerStartDate());
+			}
+
+			if (user.getDateOfJoining() != null)
+			{
+				u.setDateOfJoining(user.getDateOfJoining());
+			}
+
 			if (user.getRoles() != null)
 			{
 				u.setRoles(user.getRoles());
@@ -105,7 +115,6 @@ public class UserServiceImpl implements UserService
 			u.setUpdateddate(User.dateFormat.format(new Date()));
 			userRepo.save(u);
 			u.setPassword(null);
-			// elasticRepo.delete(u.getId());
 			elasticRepo.save(u);
 		}
 		return u;
@@ -115,7 +124,7 @@ public class UserServiceImpl implements UserService
 	public User updateUser(User user) throws Exception
 	{
 		User u = userRepo.findByEmail(user.getEmail());
-		
+
 		if (u != null)
 		{
 			if (user.getFirstname() != null)
@@ -137,10 +146,14 @@ public class UserServiceImpl implements UserService
 			u.setUpdateddate(User.dateFormat.format(new Date()));
 			userRepo.save(u);
 			u.setPassword(null);
-			// elasticRepo.delete(u.getId());
 			elasticRepo.save(u);
 		}
 		return u;
 	}
 
+	@Override
+	public long updateUserLock(String email, boolean locked) throws Exception
+	{
+		return userRepo.updateUserLock(email, locked);
+	}
 }

@@ -32,9 +32,14 @@ public class UserDetailsServiceImpl implements UserDetailsService
 		logger.debug("loading user details for username = " + username);
 		User user = userRepo.findByEmail(username);
 		
-		if (user == null)
+		if (user == null )
 		{
 			throw new UsernameNotFoundException("User not found for username = " + username);
+		}
+		if (user.isLocked())
+		{
+			throw new UsernameNotFoundException("User " + username + " is locked");
+
 		}
 
 		List<Role> roles = user.getRoles();

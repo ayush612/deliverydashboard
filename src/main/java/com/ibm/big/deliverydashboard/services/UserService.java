@@ -9,4 +9,5 @@ public interface UserService
 	public User findById(String id) throws Exception;
 	public User updateUserRestricted(User user) throws Exception;
 	public User updateUser(User user) throws Exception;
+	public long updateUserLock(String email, boolean locked) throws Exception;
 }

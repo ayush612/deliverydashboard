@@ -3,6 +3,8 @@ package com.ibm.big.deliverydashboard.dao.mongo;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Update.update;
 
+import java.util.Date;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,23 +23,14 @@ public class MongoUserRepositoryImpl implements MongoUserRepositoryCustom
 
 	@Autowired
 	MongoTemplate mongoTemplate;
-	
+
 	@Override
-	public long updatePassword(String email, String password)
+	public long updateUserLock(String email, boolean locked)
 	{
-		logger.debug("updating password of user with email = " + email);
-		WriteResult wr = mongoTemplate.updateFirst(query(where("email").is(email)), update("password", password), User.class);
+		logger.debug("updating lock status of user = " + email + " to locked = " + locked);
+		WriteResult wr = mongoTemplate.updateFirst(query(where("email").is(email)),
+				update("locked", locked).set("updateddate", User.dateFormat.format(new Date())), User.class);
 		logger.debug("update result = " + wr.getN());
 		return wr.getN();
 	}
-
-	@Override
-	public long updateBand(String email, String band)
-	{
-		logger.debug("updating band of user with email = " + email);
-		WriteResult wr = mongoTemplate.updateFirst(query(where("email").is(email)), update("band", band), User.class);
-		logger.debug("update result = " + wr.getN());
-		return wr.getN();
-	}
-
 }

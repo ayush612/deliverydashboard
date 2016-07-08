@@ -12,12 +12,12 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Document(indexName="users", type="user")
+@Document(indexName = "users", type = "user")
 @JsonInclude(value = Include.NON_EMPTY)
 public class User
 {
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-	
+
 	@Id
 	String id;
 	String email;
@@ -26,6 +26,7 @@ public class User
 	String lastname;
 	String dateOfBirth;
 	String dateOfJoining;
+	String careerStartDate;
 	Designation designation;
 	String band;
 	List<SkillTag> tags;
@@ -44,7 +45,7 @@ public class User
 	{
 		this.id = id;
 	}
-	
+
 	public String getPhone()
 	{
 		return phone;
@@ -124,8 +125,7 @@ public class User
 	{
 		this.band = band;
 	}
-	
-	
+
 	public List<SkillTag> getTags()
 	{
 		return tags;
@@ -135,7 +135,7 @@ public class User
 	{
 		this.tags = tags;
 	}
-	
+
 	public void addTag(SkillTag tag)
 	{
 		if (this.tags == null)
@@ -193,7 +193,7 @@ public class User
 	{
 		this.creationdate = creationDate;
 	}
-	
+
 	public String getUpdateddate()
 	{
 		return updateddate;
@@ -202,6 +202,16 @@ public class User
 	public void setUpdateddate(String updateddate)
 	{
 		this.updateddate = updateddate;
+	}
+
+	public String getCareerStartDate()
+	{
+		return careerStartDate;
+	}
+
+	public void setCareerStartDate(String careerStartDate)
+	{
+		this.careerStartDate = careerStartDate;
 	}
 
 	public String toString()
@@ -216,5 +226,5 @@ public class User
 		}
 		return "";
 	}
-	
+
 }
